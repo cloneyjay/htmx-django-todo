@@ -1,0 +1,69 @@
+<dialog id="task_modal" class="modal">
+    <div class="modal-box">
+        
+        <h3 class="font-bold text-lg mb-4">Add New Task</h3>
+
+        <form hx-post= "{% url 'tasks:create_task' %}"
+            hx-target="#task-table-body"
+            hx-swap="afterbegin"
+            hx-encoding='multipart/form-data'
+            hx-on:htmx:afterRequest="task_modal.close(); this.reset();"
+            class="mb-4">
+            {% csrf_token %}
+
+            <div class="form-control w-full">
+            <label class="label">
+                <span class="label-text">Title</span>
+            </label>
+
+            {{ form.title }}
+
+            {% if form.title.errors %}
+                <label class="label text-error">
+                    {{ form.title.errors }}
+                </label>
+            {% endif %}
+
+                 
+
+            </div>
+
+            <div class="form-control w-full">
+            <label class="label">
+                <span class="label-text">Description</span>
+            </label>
+
+            {{ form.description }}
+
+            {% if form.description.errors %}
+                <label class="label text-error">
+                    {{ form.description.errors }}
+                </label>
+            {% endif %}        
+
+            </div>
+
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text">Due Date</span>
+                </label>
+    
+                {{ form.due_date }}
+    
+                {% if form.due_date.errors %}
+                    <label class="label text-error">
+                        {{ form.due_date.errors }}
+                    </label>
+                {% endif %}        
+    
+                </div>
+
+            <div class="modal-action">
+                <button type="button" class="btn"
+                    onclick="task_modal.close()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add Task</button>
+            </div>
+
+        </form>
+    </div>
+</dialog>
