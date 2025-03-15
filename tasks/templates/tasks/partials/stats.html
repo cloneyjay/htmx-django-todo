@@ -1,0 +1,31 @@
+<div class="stats shadow mb-6 stats-vertical lg:stats-horizontal w-full" id="task-stats">
+    <div class="stat">
+        <div class="stat-figure text-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+        </div>
+        <div class="stat-title">Total Tasks</div>
+        <div class="stat-value">{{ tasks|length }}</div>
+    </div>
+    
+    <div class="stat">
+        <div class="stat-figure text-success">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </div>
+        <div class="stat-title">Completed</div>
+        <div class="stat-value text-success">{{ completed_count }}</div>
+    </div>
+    
+    <div class="stat">
+        <div class="stat-figure text-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </div>
+        <div class="stat-title">Pending</div>
+        <div class="stat-value text-secondary">{{ pending_count }}</div>
+    </div>
+</div> 

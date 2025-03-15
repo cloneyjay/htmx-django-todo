@@ -1,47 +1,147 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div>
-    <h1>Task Manager</h1>
-    <button class="btn btn-primary mb-4" onclick="task_modal.showModal()">
-        New Task
-    </button>
-    {% include 'tasks/partials/add-task-modal.html' %}
+<div class="min-h-[80vh]">
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                <div>
+                    <h2 class="card-title text-2xl gradient-text font-bold">My Tasks</h2>
+                    <p class="text-sm opacity-70">Manage and organize your tasks efficiently</p>
+                </div>
+                <button class="btn btn-primary btn-md sm:btn-lg shadow-lg hover:shadow-xl transition-all w-full sm:w-auto" onclick="task_modal.showModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    New Task
+                </button>
+            </div>
 
-    <label >
-        <input 
-        class="grow"
-        type="text" 
-        name="search" 
-        placeholder="Search"
-        hx-get="{% url 'tasks:search_task' %}"
-        hx-trigger="keyup delay:500ms"
-        hx-target="#task-list"
-        hx-indicator="#spinner"
-        hx-on::before-request="document.getElementById('task-list').style.opacity = 0.4;"
-        hx-on::after-request="document.getElementById('task-list').style.opacity = 1.0;" 
-        >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 16 16"
-          fill="currentColor"
-          class="h-4 w-4 opacity-70">
-          <path
-            fill-rule="evenodd"
-            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-            clip-rule="evenodd" />
-        </svg>
-        {% include 'tasks/partials/spinner.html' %}
-    </label>
-    {% include 'tasks/partials/task-list.html' %}
+            {% include 'tasks/partials/stats.html' %}
+
+            <div class="form-control mb-6">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        placeholder="Search tasks..." 
+                        class="input input-bordered w-full focus:ring-2 focus:ring-primary/40"
+                        hx-get="{% url 'tasks:search_task' %}"
+                        hx-trigger="keyup delay:500ms, search"
+                        hx-target="#task-list"
+                        hx-indicator="#spinner"
+                        hx-on::before-request="document.getElementById('task-list').style.opacity = 0.4;"
+                        hx-on::after-request="document.getElementById('task-list').style.opacity = 1.0;" 
+                    >
+                    <button class="btn btn-square bg-primary border-primary hover:bg-primary-focus hover:border-primary-focus">
+                        <span id="search-icon">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 16 16"
+                                fill="currentColor"
+                                class="h-4 w-4">
+                                <path
+                                fill-rule="evenodd"
+                                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                                clip-rule="evenodd" />
+                            </svg>
+                        </span>
+                        {% include 'tasks/partials/spinner.html' %}
+                    </button>
+                </div>
+            </div>
+
+            <div class="task-container rounded-lg">
+                {% include 'tasks/partials/task-list.html' %}
+            </div>
+            
+            <!-- Container for the edit task modal -->
+            <div id="edit-task-modal-container"></div>
+        </div>
+    </div>
 </div>
+
+{% include 'tasks/partials/add-task-modal.html' %}
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-      document.body.addEventListener('fail', () => {
-        document.getElementById('task_modal').showModal();
-      });
+        // Handle form failures
+        document.body.addEventListener('fail', () => {
+            document.getElementById('task_modal').showModal();
+        });
+        
+        // Handle task events using the global createToast function
+        document.body.addEventListener('task-deleted', () => {
+            window.createToast('Task deleted successfully!', 'success');
+        });
+        
+        document.body.addEventListener('task-created', () => {
+            window.createToast('Task added successfully!', 'success');
+        });
+        
+        document.body.addEventListener('task-updated', (event) => {
+            const message = event.detail && event.detail.message 
+                ? event.detail.message 
+                : 'Task updated successfully!';
+            window.createToast(message, 'success');
+        });
+        
+        // Add event listener for the search input to clear results
+        const searchInput = document.querySelector('input[name="search"]');
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                if (e.target.value === '') {
+                    // If search is cleared, refresh the task list
+                    const htmxEvent = new Event('search');
+                    e.target.dispatchEvent(htmxEvent);
+                }
+            });
+        }
     });
-  </script>
+</script>
+
+<style>
+    /* Task container enhancement */
+    .task-container {
+        transition: all 0.3s ease;
+    }
+    
+    /* Improve search input */
+    .input-group .input {
+        transition: all 0.2s ease;
+    }
+    
+    .input-group .input:focus {
+        border-color: hsl(var(--p));
+        box-shadow: 0 0 0 2px hsl(var(--p) / 30%);
+    }
+    
+    /* Custom animation for stats */
+    .stats {
+        animation: fadeInUp 0.5s ease-out forwards;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        .stats {
+            padding: 1rem;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+        }
+    }
+</style>
 
 {% endblock %}

@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2">
+        <div class="hero min-h-[60vh] bg-base-100 rounded-xl shadow-xl mb-8 overflow-hidden relative welcome-hero">
+            <div class="hero-overlay bg-gradient-to-r from-primary/30 to-secondary/30"></div>
+            <div class="hero-content text-center">
+                <div class="max-w-md fade-in">
+                    <h1 class="text-5xl font-bold">Welcome to Task Manager</h1>
+                    <p class="py-6 text-lg">Efficiently manage your tasks with our simple and intuitive task management system. Register or login to get started!</p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <button onclick="login_modal.showModal()" class="btn btn-primary btn-lg shadow-lg hover:shadow-xl transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                            </svg>
+                            Login
+                        </button>
+                        <button onclick="register_modal.showModal()" class="btn btn-outline btn-primary btn-lg shadow-lg hover:shadow-xl transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                            </svg>
+                            Register
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="lg:col-span-1">
+        <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 h-full">
+            <div class="card-body">
+                <h2 class="card-title text-2xl font-bold mb-4">Why Task Manager?</h2>
+                <ul class="space-y-4">
+                    <li class="flex gap-3 items-start fade-in" style="animation-delay: 0.1s">
+                        <div class="bg-primary/20 p-2 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold">Stay Organized</h3>
+                            <p class="text-sm opacity-80">Keep all your tasks in one place with clear organization and priorities.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-3 items-start fade-in" style="animation-delay: 0.2s">
+                        <div class="bg-secondary/20 p-2 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold">Never Miss Deadlines</h3>
+                            <p class="text-sm opacity-80">Set due dates for your tasks to ensure timely completion.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-3 items-start fade-in" style="animation-delay: 0.3s">
+                        <div class="bg-accent/20 p-2 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold">Access Anywhere</h3>
+                            <p class="text-sm opacity-80">Our responsive design works on all devices - desktop, tablet, or mobile.</p>
+                        </div>
+                    </li>
+                </ul>
+                <div class="card-actions justify-end mt-4">
+                    <button onclick="register_modal.showModal()" class="btn btn-primary">Get Started Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="py-10">
+    <div class="container mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-10 gradient-text">Features</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 feature-card">
+                <div class="card-body items-center text-center">
+                    <div class="text-4xl mb-4 text-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                    </div>
+                    <h3 class="card-title text-xl">Task Organization</h3>
+                    <p>Keep all your tasks organized in one place with clear prioritization.</p>
+                </div>
+            </div>
+            
+            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 feature-card">
+                <div class="card-body items-center text-center">
+                    <div class="text-4xl mb-4 text-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <h3 class="card-title text-xl">Due Dates</h3>
+                    <p>Set due dates for your tasks to ensure timely completion.</p>
+                </div>
+            </div>
+            
+            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 feature-card">
+                <div class="card-body items-center text-center">
+                    <div class="text-4xl mb-4 text-accent">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="card-title text-xl">Progress Tracking</h3>
+                    <p>Track your progress with completion status for each task.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-base-300 rounded-xl p-8 mt-6 mb-4 shadow-lg">
+    <div class="text-center max-w-2xl mx-auto">
+        <h2 class="text-2xl font-bold mb-4">Ready to get organized?</h2>
+        <p class="mb-6">Join thousands of users who have improved their productivity with Task Manager.</p>
+        <button onclick="register_modal.showModal()" class="btn btn-primary btn-lg">Create Free Account</button>
+    </div>
+</div>
+
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+    
+    .welcome-hero {
+        background-image: url('data:image/svg+xml;utf8,<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="smallGrid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255, 255, 255, 0.05)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23smallGrid)" /></svg>');
+        background-size: 100px 100px;
+    }
+    
+    .feature-card {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+    
+    .feature-card:nth-child(1) {
+        animation-delay: 0.3s;
+    }
+    
+    .feature-card:nth-child(2) {
+        animation-delay: 0.5s;
+    }
+    
+    .feature-card:nth-child(3) {
+        animation-delay: 0.7s;
+    }
+</style>
+{% endblock %} 

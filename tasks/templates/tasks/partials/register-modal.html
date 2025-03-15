@@ -1,0 +1,154 @@
+<dialog id="register_modal" class="modal">
+    <div class="modal-box">
+        <div class="flex justify-between">
+            <h3 class="font-bold text-lg">Create an Account</h3>
+            <button onclick="register_modal.close()" class="btn btn-sm btn-circle btn-ghost">✕</button>
+        </div>
+        
+        <div class="divider"></div>
+
+        <!-- Non-field errors container -->
+        <div id="register-non-field-errors" class="alert alert-error mb-4 hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <span></span>
+        </div>
+
+        <form id="registration-form" 
+            hx-post="{% url 'tasks:register' %}"
+            hx-trigger="submit"
+            hx-swap="none"
+            class="mb-4">
+            {% csrf_token %}
+
+            <div class="form-control w-full mb-4">
+                <label class="label">
+                    <span class="label-text">Username</span>
+                </label>
+                <input type="text" name="username" placeholder="Enter your username" class="input input-bordered w-full" required>
+                <label class="label error-label hidden" data-field="username">
+                    <span class="label-text-alt text-error"></span>
+                </label>
+            </div>
+
+            <div class="form-control w-full mb-4">
+                <label class="label">
+                    <span class="label-text">Email</span>
+                </label>
+                <input type="email" name="email" placeholder="Enter your email" class="input input-bordered w-full" required>
+                <label class="label error-label hidden" data-field="email">
+                    <span class="label-text-alt text-error"></span>
+                </label>
+            </div>
+
+            <div class="form-control w-full mb-4">
+                <label class="label">
+                    <span class="label-text">Password</span>
+                </label>
+                <input type="password" name="password1" placeholder="Enter your password" class="input input-bordered w-full" required>
+                <label class="label error-label hidden" data-field="password1">
+                    <span class="label-text-alt text-error"></span>
+                </label>
+            </div>
+
+            <div class="form-control w-full mb-4">
+                <label class="label">
+                    <span class="label-text">Confirm Password</span>
+                </label>
+                <input type="password" name="password2" placeholder="Confirm your password" class="input input-bordered w-full" required>
+                <label class="label error-label hidden" data-field="password2">
+                    <span class="label-text-alt text-error"></span>
+                </label>
+            </div>
+
+            <div class="modal-action">
+                <button type="button" class="btn btn-ghost" onclick="register_modal.close()">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6z" />
+                        <path d="M16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
+                    </svg>
+                    Register
+                </button>
+            </div>
+        </form>
+        
+        <div class="text-center mt-4">
+            <p>Already have an account? <button onclick="register_modal.close(); login_modal.showModal();" class="text-primary hover:underline">Login</button></p>
+        </div>
+    </div>
+</dialog>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Get the registration form and error elements
+        const registrationForm = document.getElementById('registration-form');
+        const nonFieldErrors = document.getElementById('register-non-field-errors');
+        const errorLabels = document.querySelectorAll('.error-label');
+        
+        // Function to reset all error messages
+        function resetErrorMessages() {
+            // Hide all error labels
+            errorLabels.forEach(label => {
+                label.classList.add('hidden');
+                label.querySelector('span').textContent = '';
+            });
+            
+            // Hide non-field errors
+            nonFieldErrors.classList.add('hidden');
+            nonFieldErrors.querySelector('span').textContent = '';
+        }
+        
+        // Reset error messages before sending the request
+        registrationForm.addEventListener('htmx:beforeSend', function(event) {
+            resetErrorMessages();
+        });
+        
+        // Show validation errors if registration fails
+        registrationForm.addEventListener('htmx:responseError', function(event) {
+            if (event.detail.xhr.status === 400) {
+                try {
+                    const response = JSON.parse(event.detail.xhr.responseText);
+                    
+                    if (response.errors) {
+                        // Handle field-specific errors
+                        for (const [field, errorList] of Object.entries(response.errors)) {
+                            if (field === 'non_field_errors') {
+                                // Handle non-field errors
+                                nonFieldErrors.querySelector('span').textContent = errorList.join(' ');
+                                nonFieldErrors.classList.remove('hidden');
+                            } else {
+                                // Handle field-specific errors
+                                const errorLabel = document.querySelector(`.error-label[data-field="${field}"]`);
+                                if (errorLabel) {
+                                    errorLabel.querySelector('span').textContent = errorList.join(' ');
+                                    errorLabel.classList.remove('hidden');
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // If parsing fails, show a generic error
+                    nonFieldErrors.querySelector('span').textContent = 'An error occurred during registration.';
+                    nonFieldErrors.classList.remove('hidden');
+                }
+            }
+        });
+        
+        // Handle successful registration
+        registrationForm.addEventListener('htmx:afterRequest', function(event) {
+            if (event.detail.xhr.status === 200) {
+                try {
+                    const response = JSON.parse(event.detail.xhr.responseText);
+                    if (response.success && response.redirect) {
+                        // Close the modal first
+                        register_modal.close();
+                        // Then reload the page
+                        window.location.reload();
+                    }
+                } catch (e) {
+                    console.error('Error parsing response:', e);
+                }
+            }
+        });
+    });
+</script> 

@@ -1,30 +1,24 @@
-<dialog id="task_modal" class="modal">
+<dialog id="edit_task_modal" class="modal">
     <div class="modal-box max-w-md">
         <div class="flex justify-between items-center">
-            <h3 class="font-bold text-xl gradient-text">Add New Task</h3>
-            <button onclick="task_modal.close()" class="btn btn-sm btn-circle btn-ghost">✕</button>
+            <h3 class="font-bold text-xl gradient-text">Edit Task</h3>
+            <button onclick="edit_task_modal.close()" class="btn btn-sm btn-circle btn-ghost">✕</button>
         </div>
         
         <div class="divider"></div>
 
-        <form id="add-task-form" 
-            hx-post="{% url 'tasks:create_task' %}"
+        <form id="edit-task-form"
+            hx-post="{% url 'tasks:update_task' task.id %}"
             hx-target="#task-list"
             hx-swap="innerHTML"
-            hx-indicator="#task-loading"
-            class="space-y-4">
+            class="mb-4 space-y-4">
             {% csrf_token %}
 
-            <!-- Loading indicator -->
-            <div id="task-loading" class="htmx-indicator flex justify-center my-4">
-                <span class="loading loading-spinner loading-md text-primary"></span>
-            </div>
-
-            <!-- Form errors -->
-            {% if form.non_field_errors %}
+            <!-- Form errors alert -->
+            {% if form.errors %}
             <div class="alert alert-error mb-4 animate-bounce">
                 <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                <span>{{ form.non_field_errors }}</span>
+                <span>Please correct the errors below.</span>
             </div>
             {% endif %}
 
@@ -72,14 +66,21 @@
                 {% endif %}        
             </div>
 
+            <div class="form-control w-full">
+                <label class="label cursor-pointer justify-start gap-2">
+                    <input type="checkbox" name="completed" class="checkbox checkbox-primary" {% if task.completed %}checked{% endif %}>
+                    <span class="label-text font-medium">Mark as completed</span>
+                </label>
+            </div>
+
             <div class="modal-action gap-2">
                 <button type="button" class="btn btn-ghost"
-                    onclick="task_modal.close()">Cancel</button>
+                    onclick="edit_task_modal.close()">Cancel</button>
                 <button type="submit" class="btn btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
-                    Add Task
+                    Update Task
                 </button>
             </div>
         </form>
@@ -90,21 +91,22 @@
 </dialog>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Focus on title field when modal opens
-        document.querySelector('#task_modal').addEventListener('dialog.show', function() {
+    // Show the modal after it's loaded
+    document.addEventListener('htmx:afterSwap', function(evt) {
+        if (evt.detail.target.id === 'edit-task-modal-container') {
+            edit_task_modal.showModal();
+            
+            // Add focus to the title field
             setTimeout(() => {
-                const titleField = document.querySelector('#add-task-form input[name="title"]');
+                const titleField = document.querySelector('#edit-task-form input[name="title"]');
                 if (titleField) titleField.focus();
             }, 100);
-        });
-
-        // Listen for the task-created event which will be triggered by the server
-        document.body.addEventListener('task-created', function() {
-            // Close the modal when a task is successfully created
-            task_modal.close();
-            // Reset the form
-            document.getElementById('add-task-form').reset();
-        });
+        }
     });
-</script>
+    
+    document.addEventListener('htmx:afterOnLoad', function(evt) {
+        if (evt.detail.elt.id === 'edit-task-form' && evt.detail.successful) {
+            edit_task_modal.close();
+        }
+    });
+</script> 
