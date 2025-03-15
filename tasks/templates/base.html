@@ -61,7 +61,8 @@
         
         /* Gradient accents */
         .gradient-text {
-            background: linear-gradient(90deg, hsl(var(--p)) 0%, hsl(var(--s)) 100%);
+            color: #0ea5e9; /* Fallback color */
+            background: linear-gradient(90deg, #0ea5e9 0%, #4f46e5 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -101,6 +102,10 @@
         tailwind.config = {
             theme: {
                 extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        secondary: '#4f46e5',
+                    },
                     transitionProperty: {
                         'height': 'height',
                         'spacing': 'margin, padding',
