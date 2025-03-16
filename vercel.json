@@ -5,7 +5,10 @@
       {
         "src": "taskmanager/wsgi.py",
         "use": "@vercel/python",
-        "config": { "maxLambdaSize": "15mb", "runtime": "python3.11" }
+        "config": { "maxLambdaSize": "15mb", "runtime": "python3.9",
+        "installCommand": "pip install -r requirements.txt",
+        "postInstallCommand": "python manage.py collectstatic"
+      }
       },
       {
         "src": "build_files.sh",
